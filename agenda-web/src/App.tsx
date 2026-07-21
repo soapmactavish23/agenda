@@ -8,13 +8,18 @@ import { Toast } from "primereact/toast";
 
 import { Fieldset } from "primereact/fieldset";
 
-import type { Contact } from "./types/contact";
+import { newContact, type Contact } from "./types/contact";
 import { contactService } from "./services/contactService";
 import { useQuery } from "@tanstack/react-query";
 import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
+import { Dialog } from "primereact/dialog";
+import { DialogForm } from "./components/DialogForm";
+
 export default function App() {
   const dt = useRef<DataTable<Contact[]>>(null);
   const [listFiltered, setListFiltered] = useState<Contact[]>([]);
+  const [visibleDialog, setVisibleDialog] = useState<boolean>(false);
+  const [obj, setObj] = useState<Contact>(newContact);
 
   const {
     data: list,
@@ -51,8 +56,18 @@ export default function App() {
     });
   };
 
+  const handleOnClose = () => {
+    setVisibleDialog(false);
+    setObj(newContact);
+  };
+
   return (
     <div className="p-8">
+      <DialogForm
+        visibleDialog={visibleDialog}
+        obj={obj}
+        onClose={handleOnClose}
+      />
       <ConfirmDialog />
       <Fieldset legend="Agenda">
         <DataTable
@@ -71,7 +86,7 @@ export default function App() {
                 icon="pi pi-plus"
                 severity="success"
                 onClick={() => {
-                  console.log("Clicou em novo");
+                  setVisibleDialog(true);
                 }}
               />
               <InputText

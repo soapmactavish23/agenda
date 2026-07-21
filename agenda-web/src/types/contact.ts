@@ -4,3 +4,10 @@ export interface Contact {
   email: string;
   contact: string;
 }
+
+export let newContact = {
+  id: null,
+  name: "",
+  contact: "",
+  email: "",
+};
