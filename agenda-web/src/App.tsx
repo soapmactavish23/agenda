@@ -14,6 +14,7 @@ import { useQuery } from "@tanstack/react-query";
 import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
 export default function App() {
   const dt = useRef<DataTable<Contact[]>>(null);
+  const [listFiltered, setListFiltered] = useState<Contact[]>([]);
 
   const {
     data: list,
@@ -23,9 +24,18 @@ export default function App() {
     queryKey: ["FIND_ALL"],
     queryFn: async () => {
       const response = await contactService.findAll();
+      setListFiltered(response);
       return response;
     },
   });
+
+  const handleOnSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const search = e.target.value.toLowerCase();
+    const result = list!.filter((res) =>
+      res.name.toLocaleLowerCase().includes(search),
+    );
+    setListFiltered(result);
+  };
 
   const handleDelete = (rowData: Contact) => {
     confirmDialog({
@@ -47,7 +57,7 @@ export default function App() {
       <Fieldset legend="Agenda">
         <DataTable
           ref={dt}
-          value={list}
+          value={listFiltered}
           dataKey="id"
           paginator
           rows={10}
@@ -67,9 +77,7 @@ export default function App() {
               <InputText
                 type="search"
                 placeholder="Pesquisar"
-                onInput={(event) => {
-                  console.log(event);
-                }}
+                onInput={handleOnSearch}
               />
             </div>
           }
