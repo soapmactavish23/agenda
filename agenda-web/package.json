@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.4.0",
     "@primeicons/react": "^8.0.0",
     "@primereact/ui": "^11.0.0",
     "@primeuix/themes": "^3.0.0",
@@ -20,6 +21,7 @@
     "primereact": "^10.9.8",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
+    "react-hook-form": "^7.82.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {

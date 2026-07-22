@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { InputText } from "primereact/inputtext";
-import { Toast } from "primereact/toast";
 
 import { Fieldset } from "primereact/fieldset";
 
@@ -12,7 +11,6 @@ import { newContact, type Contact } from "./types/contact";
 import { contactService } from "./services/contactService";
 import { useQuery } from "@tanstack/react-query";
 import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
-import { Dialog } from "primereact/dialog";
 import { DialogForm } from "./components/DialogForm";
 
 export default function App() {
@@ -58,7 +56,17 @@ export default function App() {
 
   const handleOnClose = () => {
     setVisibleDialog(false);
+    refetch();
+  };
+
+  const handleOpenNew = () => {
     setObj(newContact);
+    setVisibleDialog(true);
+  };
+
+  const handleOpenEdit = (data: Contact) => {
+    setObj(data);
+    setVisibleDialog(true);
   };
 
   return (
@@ -86,7 +94,7 @@ export default function App() {
                 icon="pi pi-plus"
                 severity="success"
                 onClick={() => {
-                  setVisibleDialog(true);
+                  handleOpenNew();
                 }}
               />
               <InputText
@@ -104,7 +112,7 @@ export default function App() {
           <Column field="contact" header="Contato"></Column>
           <Column field="email" header="E-mail"></Column>
           <Column
-            body={(rowData: Contact) => {
+            body={(data: Contact) => {
               return (
                 <>
                   <Button
@@ -113,14 +121,14 @@ export default function App() {
                     severity="success"
                     className="mr-2"
                     onClick={() => {
-                      console.log("Editar");
+                      handleOpenEdit(data);
                     }}
                   />
                   <Button
                     icon="pi pi-trash"
                     rounded
                     severity="danger"
-                    onClick={() => handleDelete(rowData)}
+                    onClick={() => handleDelete(data)}
                   />
                 </>
               );
