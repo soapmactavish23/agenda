@@ -1,4 +1,5 @@
 spring:
+  profile: local
   application:
     name: agenda-api
   jpa:

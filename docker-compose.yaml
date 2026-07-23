@@ -3,19 +3,56 @@ services:
     image: mysql:8.4
     container_name: agenda-crud-mysql
     restart: unless-stopped
+
     environment:
-      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_ROOT_PASSWORD: "123456"
+      MYSQL_DATABASE: agenda
+
     ports:
       - "3306:3306"
+
     volumes:
       - agenda_mysql_data:/var/lib/mysql
+
     healthcheck:
       test:
-        ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-u",
+          "root",
+          "-p123456",
+        ]
       interval: 10s
       timeout: 5s
       retries: 10
-      start_period: 20s
+      start_period: 30s
+
+  agenda-api:
+    image: agenda/agenda-api:latest
+    container_name: agenda-api
+    restart: "no"
+
+    ports:
+      - "8080:8080"
+
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/agenda?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: "123456"
+
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
 volumes:
   agenda_mysql_data:
